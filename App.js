@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Login from './src/screens/Login'
+import MyApp from './src/Navigator'
 import { Font } from 'expo';
 
 export default class App extends React.Component {
@@ -20,7 +20,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      this.state.fontLoaded ? <Login /> : null
+      this.state.fontLoaded ? <MyApp /> : null
     );
   }
 }

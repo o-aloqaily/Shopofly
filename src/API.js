@@ -1,37 +1,39 @@
-const URL = '127.0.0.1:8000/api'
+const url = 'http://10.131.193.164:8000/api'
 
-const login = (email, password) => {
-  return fetch(`${URL}/auth/login`, {
+export const login = (email, password) => {
+  const body = { "email": email, "password": password }
+  return fetch(`${url}/auth/login`, {
     method: 'POST',
-    headers: { 'TOKEN': token },
-    body: JSON.stringify({ email, password })
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body)
   })
-  .then((res) => response.json())
-  .then((data) => data)
-  .catch((error) => error)
+  .then((res) => res.json())
+  .then((data) => data.access_token)
+  .catch((error) => console.log(error))
 }
 
-const register = (data) => {
+export const register = (data) => {
   // data parameter is a json object containing all registration data
   const { name, email, password, phoneNumber, address } = data
-
-  return fetch(`${URL}/users/register`, {
-    method: 'POST',
-    body: JSON.stringify({
-      name, email, password, mobile_number: phoneNumber, address
-    })
+  const body = { "name": name, "email": email, "password": password, "mobile_number": phoneNumber, "address": address }
+  return fetch(`${url}/users/register`, {
+    method: "POST",
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body)
   })
+  .then((res) => res.json())
+  .then((data) => data.token)
+  .catch((error) => error)
 
 }
 
-const getUserInfo = (token) => {
-  return fetch(`${URL}/auth/me`, {
-  method: 'POST', // or 'PUT'
-  headers:{
-    'TOKEN': token
+export const getUserInfo = (token) => {
+  return fetch(`${url}/auth/me`, {
+    method: 'POST', // or 'PUT'
+    headers: { 'TOKEN': token }
   })
   .then((res) => response.json())
-  .then((data) => data)
+  .then((data) => console.log(data))
 }
 
 const logout = () => {

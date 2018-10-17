@@ -1,78 +1,93 @@
 import React, { Component } from 'react'
-import { ImageBackground, View, TouchableOpacity, Text, AsyncStorage } from 'react-native'
+import { ImageBackground, View, TouchableOpacity, Text, AsyncStorage, Spinner } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Hideo } from 'react-native-textinput-effects';
-import { Card, Button, Divider } from '../components'
+import { Button } from '../components'
 import * as API from '../API'
 
 export default class Login extends Component {
 	state = {
-    email: '',
-    password: ''
+		email: '',
+		password: '',
+		loading: false
 	}
 
-  onLogin = async (email, password) => {
-    API.login(email, password)
-    .then((token) => {
-      await AsyncStorage.setItem('token', token)
+  onLogin = () => {
+		this.setState({ loading: true })
+    API.login(this.state.email, this.state.password)
+    .then(async (token) => {
+			if (token != undefined) {
+				await AsyncStorage.setItem('token', token)
+				this.props.navigation.navigate('Home')
+			} else {
+				alert('Error logging in')
+			}
+			this.setState({ loading: false })
     })
-    .catch((error) => console.log('An error occured while logging in.. Please try again.'))
-  }
-
-  onRegister = () => {
-
+    .catch((error) => {
+			console.log('An error occured while logging in.. Please try again.')
+			this.setState({ loading: false })
+		})
   }
 
   renderForm() {
+		const { email, password } = this.state
+		const { buttonContainer, formContainer, signUpButton, signUpText, boldText, inputContainer, inputStyle } = styles
     return (
       <View style={formContainer}>
 
-        <View style={inputContainer}>
-          <Hideo
-            iconClass={MaterialCommunityIcons}
-            iconName={'email'}
-            iconColor={'white'}
-            iconBackgroundColor={'#1fb19c'}
-            inputStyle={{ color: '#464949', fontFamily: 'Coves-Bold' }}
-            placeholder='email address...'
-            value={email}
-            onChangeText={(email) => this.setState({ email })}
-            autoCapitalize='none'
-          />
-        </View>
+				<View>
+					<View style={inputContainer}>
+						<Hideo
+							iconClass={MaterialCommunityIcons}
+							iconName={'email'}
+							iconColor={'white'}
+							iconBackgroundColor={'#1fb19c'}
+							inputStyle={inputStyle}
+							placeholder='email address...'
+							value={email}
+							onChangeText={(email) => this.setState({ email })}
+							autoCapitalize='none'
+						/>
+					</View>
 
-        <View style={inputContainer}>
-          <Hideo
-            iconClass={MaterialCommunityIcons}
-            iconName={'key'}
-            iconColor={'white'}
-            iconBackgroundColor={'#1fb19c'}
-            inputStyle={{ color: '#464949', fontFamily: 'Coves-Bold' }}
-            placeholder='password...'
-            value={password}
-            onChangeText={(password) => this.setState({ password })}
-            secureTextEntry
-            autoCapitalize='none'
-          />
-        </View>
+					<View style={inputContainer}>
+						<Hideo
+							iconClass={MaterialCommunityIcons}
+							iconName={'key'}
+							iconColor={'white'}
+							iconBackgroundColor={'#1fb19c'}
+							inputStyle={inputStyle}
+							placeholder='password...'
+							value={password}
+							onChangeText={(password) => this.setState({ password })}
+							secureTextEntry
+							autoCapitalize='none'
+						/>
+					</View>
+				</View>
 
-        <View style={buttonContainer}>
-          <Button label={'Login'} />
-        </View>
+					<View style={buttonContainer}>
+						<Button
+							label={'Login'}
+							onClick={this.onLogin}
+							isLoading={this.state.loading}
+							/>
+					</View>
 
-        <TouchableOpacity style={signUpButton}>
+        <TouchableOpacity
+					style={signUpButton}
+					onPress={() => this.props.navigation.navigate('Register')}
+				>
           <Text style={signUpText}>Dont have an account? <Text style={boldText}>Sign Up</Text></Text>
         </TouchableOpacity>
-
 
       </View>
     )
   }
 
 	render() {
-		const { background, inputContainer, buttonContainer, formContainer,
-              signUpButton, signUpText, dividerContainer, boldText } = styles
-		const { email, password } = this.state
+		const { background } = styles
 		return (
       <ImageBackground
         source={require('../../assets/splash.png')}
@@ -88,13 +103,6 @@ export default class Login extends Component {
 const styles = {
   formContainer: {
     top: 300
-  },
-  inputContainer: {
-    width: '80%',
-    height: 48,
-    alignSelf: 'center',
-    opacity: 0.8,
-    marginBottom: 10
   },
   buttonContainer: {
     marginTop: 10
@@ -119,5 +127,16 @@ const styles = {
   boldText: {
     fontFamily: 'Coves-Bold',
     fontWeight: '900'
-  }
+  },
+	inputStyle: {
+		color: '#464949',
+		fontFamily: 'Coves-Bold'
+	},
+	inputContainer: {
+		width: '80%',
+		height: 48,
+		alignSelf: 'center',
+		opacity: 0.8,
+		marginBottom: 10
+	},
 }

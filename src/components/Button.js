@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity, Text } from 'react-native'
+import { TouchableOpacity, Text, ActivityIndicator } from 'react-native'
 
 const Button = (props) => {
 	const { container, labelStyle } = styles
@@ -13,9 +13,11 @@ const Button = (props) => {
 	return (
     <TouchableOpacity
       style={[container]}
-      onPress={props.onLogin}
+      onPress={props.onClick}
     >
-      <Text style={labelStyle}>{ props.label }</Text>
+      {
+				props.isLoading ? <ActivityIndicator color={'white'}/> : <Text style={labelStyle}>{ props.label }</Text>
+			}
     </TouchableOpacity>
 	)
 }
