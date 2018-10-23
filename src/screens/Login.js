@@ -4,31 +4,75 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Hideo } from 'react-native-textinput-effects';
 import { Button } from '../components'
 import * as API from '../API'
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default class Login extends Component {
 	state = {
-		email: '',
-		password: '',
-		loading: false
+		email: 'nnawif@gmail.com',
+		password: '123456',
+		loading: false,
+		showAlert: false,
+		alertTitle: '',
+		alertMessage: ''
 	}
 
   onLogin = () => {
+		const { email, password } = this.state
 		this.setState({ loading: true })
-    API.login(this.state.email, this.state.password)
+
+    API.login(email, password)
     .then(async (token) => {
-			if (token != undefined) {
-				await AsyncStorage.setItem('token', token)
-				this.props.navigation.navigate('Home')
-			} else {
-				alert('Error logging in')
-			}
+			await AsyncStorage.setItem('token', token)
+			this.props.navigation.navigate('Home', { token })
 			this.setState({ loading: false })
     })
     .catch((error) => {
-			console.log('An error occured while logging in.. Please try again.')
+			this.showAlert('Login Failed', 'Please make sure you submitted the correct email and password')
 			this.setState({ loading: false })
 		})
   }
+
+	onRegister = () => {
+		const { email, password } = this.state
+		API.register(email, password)
+		.then(async (data) => {
+				await AsyncStorage.setItem('token', data.token)
+				this.props.navigation.navigate('Home', { token: data.token })
+		})
+		.catch((error) => this.showAlert('Registration Failed',error.response.data["cause by"]))
+	}
+
+	showAlert = (alertTitle, alertMessage) => {
+		this.setState({
+			alertMessage,
+			alertTitle,
+			showAlert: true
+		})
+	}
+
+	hideAlert = () => {
+		this.setState({
+			showAlert: false
+		})
+	}
+
+	renderAlert() {
+		const { showAlert, alertTitle, alertMessage } = this.state
+		return (
+			<AwesomeAlert
+				show={showAlert}
+				title={alertTitle}
+				message={alertMessage}
+				closeOnTouchOutside={true}
+				closeOnHardwareBackPress={true}
+				showConfirmButton={true}
+				confirmText="OK"
+				confirmButtonColor="#1fb19c"
+				onConfirmPressed={() => this.hideAlert()}
+				messageStyle={{ textAlign: 'center' }}
+			/>
+		)
+	}
 
   renderForm() {
 		const { email, password } = this.state
@@ -77,9 +121,9 @@ export default class Login extends Component {
 
         <TouchableOpacity
 					style={signUpButton}
-					onPress={() => this.props.navigation.navigate('Register')}
+					onPress={this.onRegister}
 				>
-          <Text style={signUpText}>Dont have an account? <Text style={boldText}>Sign Up</Text></Text>
+          <Text style={signUpText}>or <Text style={boldText}>Sign Up</Text></Text>
         </TouchableOpacity>
 
       </View>
@@ -87,13 +131,13 @@ export default class Login extends Component {
   }
 
 	render() {
-		const { background } = styles
 		return (
       <ImageBackground
         source={require('../../assets/splash.png')}
         style={{width: '100%', height: '100%' }}
       >
         { this.renderForm() }
+				{ this.renderAlert()}
       </ImageBackground>
 
 		)

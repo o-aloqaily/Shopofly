@@ -32,7 +32,7 @@ export default class Register extends Component {
   renderForm() {
 		const { email, password, address, name, phoneNumber } = this.state
 		const { buttonContainer, formContainer, signUpButton, signUpText, boldText, inputContainer, inputStyle } = styles
-    return (
+		return (
       <View style={formContainer}>
 
 				<View>
@@ -77,34 +77,6 @@ export default class Register extends Component {
 							autoCapitalize='none'
 						/>
 					</View>
-
-          <View style={inputContainer}>
-            <Hideo
-              iconClass={MaterialCommunityIcons}
-              iconName={'key'}
-              iconColor={'white'}
-              iconBackgroundColor={'#1fb19c'}
-              inputStyle={inputStyle}
-              placeholder='phone number...'
-              value={phoneNumber}
-              onChangeText={(phoneNumber) => this.setState({ phoneNumber })}
-              autoCapitalize='none'
-            />
-          </View>
-
-          <View style={inputContainer}>
-            <Hideo
-              iconClass={MaterialCommunityIcons}
-              iconName={'account-location'}
-              iconColor={'white'}
-              iconBackgroundColor={'#1fb19c'}
-              inputStyle={inputStyle}
-              placeholder='address... (optional)'
-              value={address}
-              onChangeText={(address) => this.setState({ address })}
-            />
-          </View>
-
 				</View>
 
         <View style={buttonContainer}>
@@ -127,7 +99,6 @@ export default class Register extends Component {
   }
 
 	render() {
-		const { background } = styles
 		return (
       <ImageBackground
         source={require('../../assets/splash.png')}
@@ -142,7 +113,7 @@ export default class Register extends Component {
 
 const styles = {
   formContainer: {
-    top: 260
+    top: 300
   },
   buttonContainer: {
     marginTop: 10

@@ -1,39 +1,44 @@
-const url = 'http://10.131.193.164:8000/api'
+import axios from 'axios'
+
+const url = 'https://shopofly.herokuapp.com/api'
 
 export const login = (email, password) => {
-  const body = { "email": email, "password": password }
-  return fetch(`${url}/auth/login`, {
+  return axios({
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(body)
+    url: `${url}/auth/login`,
+    headers: { 'Content-type': 'application/json' },
+    data: {
+      "email": email,
+      "password": password
+    }
   })
-  .then((res) => res.json())
-  .then((data) => data.access_token)
-  .catch((error) => console.log(error))
+  .then((res) => res.data.access_token)
 }
 
-export const register = (data) => {
-  // data parameter is a json object containing all registration data
-  const { name, email, password, phoneNumber, address } = data
-  const body = { "name": name, "email": email, "password": password, "mobile_number": phoneNumber, "address": address }
-  return fetch(`${url}/users/register`, {
-    method: "POST",
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(body)
+export const register = (email, password) => {
+  return axios({
+    method: 'POST',
+    url: `${url}/users/register`,
+    headers: { 'Content-type': 'application/json' },
+    data: {
+      "email": email,
+      "password": password,
+    }
   })
-  .then((res) => res.json())
-  .then((data) => data.token)
-  .catch((error) => error)
+  .then((res) => res.data)
 
 }
 
 export const getUserInfo = (token) => {
-  return fetch(`${url}/auth/me`, {
-    method: 'POST', // or 'PUT'
-    headers: { 'TOKEN': token }
+  return axios({
+    method: 'POST',
+    url: `${url}/auth/me`,
+    headers: { 'Content-type': 'application/json' },
+    data: {
+      'token': token
+    }
   })
-  .then((res) => response.json())
-  .then((data) => console.log(data))
+  .then((res) => res.data)
 }
 
 const logout = () => {
