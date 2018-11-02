@@ -44,3 +44,15 @@ export const getUserInfo = (token) => {
 const logout = () => {
   // TODO implement this.
 }
+
+// export const getItem = (token) => {
+//   return axios({
+//     method: 'POST',
+//     url: `${url}/auth/me`,
+//     headers: { 'Content-type': 'application/json' },
+//     data: {
+//       'token': token
+//     }
+//   })
+//   .then((res) => res.data)
+// }

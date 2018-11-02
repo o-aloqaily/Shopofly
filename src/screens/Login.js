@@ -63,7 +63,7 @@ export default class Login extends Component {
 				confirmText="OK"
 				confirmButtonColor="#1fb19c"
 				onConfirmPressed={() => this.hideAlert()}
-				messageStyle={{ textAlign: 'center' }}
+				// messageStyle={{ textAlign: 'center' }}
 			/>
 		)
 	}

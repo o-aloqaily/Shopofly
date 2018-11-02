@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { Alert, Linking, Dimensions, LayoutAnimation, Text, View, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import * as API from '../API'
 
 export default class App extends Component {
   state = {
     hasCameraPermission: null,
     lastScannedUrl: null,
     showAlert: false,
-    alertTitle: '',
-    alertMessage: '',
+		alertTitle: '',
+		alertMessage: ''
   };
 
   componentDidMount() {
@@ -25,27 +26,13 @@ export default class App extends Component {
 
   // Handle QR code reader output
   _handleBarCodeRead = result => {
+    console.log("Reading BarCode!!!")
     if (result.data !== this.state.lastScannedUrl) {
       LayoutAnimation.spring();
+      console.log("Changing Barcode Url")
       this.setState({ lastScannedUrl: result.data });
+      debugger;
     }
-  }
-  renderAlert() {
-    const { showAlert, alertTitle, alertMessage } = this.state
-    return (
-      <AwesomeAlert
-        show={showAlert}
-        title={alertTitle}
-        message={alertMessage}
-        closeOnTouchOutside={true}
-        closeOnHardwareBackPress={true}
-        showConfirmButton={true}
-        confirmText="OK"
-        confirmButtonColor="#1fb19c"
-        onConfirmPressed={() => this.hideAlert()}
-        messageStyle={{ textAlign: 'center' }}
-      />
-    )
   }
 
   render() {
@@ -66,8 +53,18 @@ export default class App extends Component {
                   }}
                 />}
 
-        {this._maybeRenderUrl()}
-        {this.renderAlert()}
+        <AwesomeAlert
+        	show={this.state.showAlert}
+        	title={this.state.alertTitle}
+        	message={this.state.alertMessage}
+        	closeOnTouchOutside={true}
+        	closeOnHardwareBackPress={true}
+        	showConfirmButton={true}
+        	confirmText="OK"
+        	confirmButtonColor="#1fb19c"
+        	onConfirmPressed={() => this.hideAlert()}
+        	messageStyle={{ textAlign: 'left' }}
+        />
 
         <StatusBar hidden />
       </View>
@@ -91,22 +88,26 @@ export default class App extends Component {
   _handlePressCancel = () => {
     this.setState({ lastScannedUrl: null });
   };
-
   showAlert = (alertTitle, alertMessage) => {
+    console.log("Showing alert...")
     this.setState({
       alertMessage,
       alertTitle,
       showAlert: true
     })
+    console.log("Alert Shown!!")
   }
 
   hideAlert = () => {
+    console.log("Hiding alert...")
     this.setState({
       showAlert: false
     })
+    console.log("Alert hidden!!")
   }
 
   _maybeRenderUrl = () => {
+    console.log("Maybe Render Url...")
     if (!this.state.lastScannedUrl) {
       return;
     }
@@ -118,7 +119,7 @@ export default class App extends Component {
 
     const fullDescription = firstLine + "\n\n" + secondLine
 
-    this.showAlert("ITEM DESCRIPTION", fullDescription);
+    this.showAlert("ITEM DESCRIPTION", fullDescription)
   };
 }
 
