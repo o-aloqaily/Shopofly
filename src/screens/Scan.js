@@ -9,8 +9,7 @@ export default class App extends Component {
     hasCameraPermission: null,
     lastScannedUrl: null,
     showAlert: false,
-		alertTitle: '',
-		alertMessage: ''
+    alertMessage: '',
   };
 
   componentDidMount() {
@@ -31,7 +30,17 @@ export default class App extends Component {
       LayoutAnimation.spring();
       console.log("Changing Barcode Url")
       this.setState({ lastScannedUrl: result.data });
-      debugger;
+
+      //TODO get information from DATABASE
+      const itemName = "{{Item Name}}"
+      const itemDescription = "{{Item Description}}"
+
+      const firstLine = `name: ${itemName}`
+      const secondLine = `description: ${itemDescription}`
+
+      const fullDescription = firstLine + "\n\n" + secondLine
+
+      this.showAlert(fullDescription)
     }
   }
 
@@ -55,7 +64,7 @@ export default class App extends Component {
 
         <AwesomeAlert
         	show={this.state.showAlert}
-        	title={this.state.alertTitle}
+        	title={"ITEM DESCRIPTION"}
         	message={this.state.alertMessage}
         	closeOnTouchOutside={true}
         	closeOnHardwareBackPress={true}
@@ -88,21 +97,28 @@ export default class App extends Component {
   _handlePressCancel = () => {
     this.setState({ lastScannedUrl: null });
   };
-  showAlert = (alertTitle, alertMessage) => {
+
+  showAlert = (message) => {
     console.log("Showing alert...")
     this.setState({
-      alertMessage,
-      alertTitle,
-      showAlert: true
+      showAlert: true,
+      alertMessage: message
     })
+
+    console.log("SHOWALERT lastScannedUrl: " + this.state.lastScannedUrl)
+
     console.log("Alert Shown!!")
   }
 
   hideAlert = () => {
     console.log("Hiding alert...")
     this.setState({
-      showAlert: false
+      showAlert: false,
+      lastScannedUrl: null
     })
+
+    console.log("HIDEALERT lastScannedUrl: " + this.state.lastScannedUrl)
+
     console.log("Alert hidden!!")
   }
 
@@ -111,15 +127,9 @@ export default class App extends Component {
     if (!this.state.lastScannedUrl) {
       return;
     }
-    const itemName = "{{Item Name}}"
-    const itemDescription = "{{Item Description}}"
 
-    const firstLine = `name: ${itemName}`
-    const secondLine = `description: ${itemDescription}`
 
-    const fullDescription = firstLine + "\n\n" + secondLine
-
-    this.showAlert("ITEM DESCRIPTION", fullDescription)
+    console.log("IT IS URL!! RENDER IT!!")
   };
 }
 
