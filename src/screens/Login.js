@@ -23,7 +23,7 @@ export default class Login extends Component {
     API.login(email, password)
     .then(async (token) => {
 			await AsyncStorage.setItem('token', token)
-			this.props.navigation.navigate('Home', { token })
+			this.props.navigation.navigate('Scan', { token })
 			this.setState({ loading: false })
     })
     .catch((error) => {
@@ -37,7 +37,7 @@ export default class Login extends Component {
 		API.register(email, password)
 		.then(async (data) => {
 				await AsyncStorage.setItem('token', data.token)
-				this.props.navigation.navigate('Home', { token: data.token })
+				this.props.navigation.navigate('Scan', { token: data.token })
 		})
 		.catch((error) => this.showAlert('Registration Failed',error.response.data["cause by"]))
 	}

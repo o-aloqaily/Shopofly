@@ -7,8 +7,6 @@ export default class App extends React.Component {
   state = {
     fontLoaded: false,
   }
-
-
   async componentDidMount() {
     await Font.loadAsync({
       'Coves-Bold': require('./assets/fonts/CovesBold.otf'),
