@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Alert, Linking, Dimensions, LayoutAnimation, Text, View, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default class App extends Component {
   state = {
     hasCameraPermission: null,
     lastScannedUrl: null,
+    showAlert: false,
+    alertTitle: '',
+    alertMessage: '',
   };
 
   componentDidMount() {
@@ -19,12 +23,30 @@ export default class App extends Component {
     });
   };
 
+  // Handle QR code reader output
   _handleBarCodeRead = result => {
     if (result.data !== this.state.lastScannedUrl) {
       LayoutAnimation.spring();
       this.setState({ lastScannedUrl: result.data });
     }
-  };
+  }
+  renderAlert() {
+    const { showAlert, alertTitle, alertMessage } = this.state
+    return (
+      <AwesomeAlert
+        show={showAlert}
+        title={alertTitle}
+        message={alertMessage}
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={true}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#1fb19c"
+        onConfirmPressed={() => this.hideAlert()}
+        messageStyle={{ textAlign: 'center' }}
+      />
+    )
+  }
 
   render() {
     return (
@@ -45,12 +67,12 @@ export default class App extends Component {
                 />}
 
         {this._maybeRenderUrl()}
+        {this.renderAlert()}
 
         <StatusBar hidden />
       </View>
     );
   }
-
   _handlePressUrl = () => {
     Alert.alert(
       'Open this URL?',
@@ -70,27 +92,33 @@ export default class App extends Component {
     this.setState({ lastScannedUrl: null });
   };
 
+  showAlert = (alertTitle, alertMessage) => {
+    this.setState({
+      alertMessage,
+      alertTitle,
+      showAlert: true
+    })
+  }
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false
+    })
+  }
+
   _maybeRenderUrl = () => {
     if (!this.state.lastScannedUrl) {
       return;
     }
+    const itemName = "{{Item Name}}"
+    const itemDescription = "{{Item Description}}"
 
-    return (
-      <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.url} onPress={this._handlePressUrl}>
-          <Text numberOfLines={1} style={styles.urlText}>
-            {this.state.lastScannedUrl}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={this._handlePressCancel}>
-          <Text style={styles.cancelButtonText}>
-            Cancel
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
+    const firstLine = `name: ${itemName}`
+    const secondLine = `description: ${itemDescription}`
+
+    const fullDescription = firstLine + "\n\n" + secondLine
+
+    this.showAlert("ITEM DESCRIPTION", fullDescription);
   };
 }
 

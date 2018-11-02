@@ -33,13 +33,7 @@ export default class Login extends Component {
   }
 
 	onRegister = () => {
-		const { email, password } = this.state
-		API.register(email, password)
-		.then(async (data) => {
-				await AsyncStorage.setItem('token', data.token)
-				this.props.navigation.navigate('Scan', { token: data.token })
-		})
-		.catch((error) => this.showAlert('Registration Failed',error.response.data["cause by"]))
+		this.props.navigation.navigate('Register')
 	}
 
 	showAlert = (alertTitle, alertMessage) => {
