@@ -31,16 +31,20 @@ export default class App extends Component {
       console.log("Changing Barcode Url")
       this.setState({ lastScannedUrl: result.data });
 
-      //TODO get information from DATABASE
-      const itemName = "{{Item Name}}"
-      const itemDescription = "{{Item Description}}"
+      API.getItem(result.data)
+      .then(async (response) => {
+        //TODO wait for Nawaf to change API request
+        const itemName = response.itemName
+        const price = response.price
+        const itemDescription = response.description
 
-      const firstLine = `name: ${itemName}`
-      const secondLine = `description: ${itemDescription}`
+        const firstLine = `name: ${itemName}`
+        const secondLine = `price: ${price}`
+        const thirdLine = `description: ${itemDescription}`
 
-      const fullDescription = firstLine + "\n\n" + secondLine
-
-      this.showAlert(fullDescription)
+        const fullDescription = firstLine + "\n" + secondLine + "\n\n" + thirdLine
+        this.showAlert(fullDescription)
+      }).catch((error) => {})
     }
   }
 

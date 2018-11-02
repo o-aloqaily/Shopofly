@@ -45,14 +45,12 @@ const logout = () => {
   // TODO implement this.
 }
 
-// export const getItem = (token) => {
-//   return axios({
-//     method: 'POST',
-//     url: `${url}/auth/me`,
-//     headers: { 'Content-type': 'application/json' },
-//     data: {
-//       'token': token
-//     }
-//   })
-//   .then((res) => res.data)
-// }
+export const getItem = (itemId) => {
+  //TODO wait for Nawaf to change API request
+  return axios({
+    method: 'GET',
+    url: `${url}/store/item/${itemId}`,
+    headers: { 'Content-type': 'application/json' }
+  })
+  .then((res) => res.data)
+}

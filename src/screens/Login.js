@@ -63,7 +63,7 @@ export default class Login extends Component {
 				confirmText="OK"
 				confirmButtonColor="#1fb19c"
 				onConfirmPressed={() => this.hideAlert()}
-				// messageStyle={{ textAlign: 'center' }}
+				messageStyle={{ textAlign: 'center' }}
 			/>
 		)
 	}
@@ -131,7 +131,7 @@ export default class Login extends Component {
         style={{width: '100%', height: '100%' }}
       >
         { this.renderForm() }
-				{ this.renderAlert()}
+				{ this.renderAlert() }
       </ImageBackground>
 
 		)
