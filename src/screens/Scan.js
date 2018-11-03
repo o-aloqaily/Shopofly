@@ -24,9 +24,9 @@ export default class App extends Component {
   };
 
   render() {
-    if (hasCameraPermission === null) {
+    if (this.state.hasCameraPermission === null) {
         return <Text>Requesting for camera permission</Text>;
-    } else if (hasCameraPermission === false) {
+    } else if (this.state.hasCameraPermission === false) {
         return <Text style={{ color: '#fff' }}>No access to camera</Text>;
     }
 
