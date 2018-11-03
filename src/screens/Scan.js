@@ -66,11 +66,11 @@ export default class App extends Component {
       const scannedText = result.data
 
       //TODO remove debug
-      console.log(result.data)
+      console.log(scannedText)
 
       //TODO check if we need this condition
       if(/*scannedText &&*/ scannedText.toLowerCase().includes("shopofly")) {
-        API.getItem(result.data)
+        API.getItem(scannedText)
         .then(async (response) => {
           const itemName = response.itemName
           const price = response.price
