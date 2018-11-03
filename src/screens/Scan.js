@@ -60,22 +60,31 @@ export default class App extends Component {
   // Handle QR code reader output
   _handleBarCodeRead = result => {
     if (result.data !== this.state.lastScannedUrl) {
-      LayoutAnimation.spring();
-      this.setState({ lastScannedUrl: result.data });
+      LayoutAnimation.spring()
+      this.setState({ lastScannedUrl: result.data })
 
-      API.getItem(result.data)
-      .then(async (response) => {
-        const itemName = response.itemName
-        const price = response.price
-        const itemDescription = response.description
+      const scannedText = result.data
 
-        const firstLine = `name: ${itemName}`
-        const secondLine = `price: ${price}`
-        const thirdLine = `description: ${itemDescription}`
+      //TODO remove debug
+      console.log(result.data)
 
-        const fullDescription = firstLine + "\n" + secondLine + "\n\n" + thirdLine
-        this.showAlert(fullDescription)
-      }).catch((error) => {})
+      //TODO check if we need this condition
+      if(/*scannedText &&*/ scannedText.toLowerCase().includes("shopofly")) {
+        API.getItem(result.data)
+        .then(async (response) => {
+          const itemName = response.itemName
+          const price = response.price
+          const itemDescription = response.description
+
+          const firstLine = `name: ${itemName}`
+          const secondLine = `price: ${price}`
+          const thirdLine = `description: ${itemDescription}`
+
+          const fullDescription = firstLine + "\n" + secondLine + "\n\n" + thirdLine
+          this.showAlert(fullDescription)
+        }).catch((error) => {})
+      }
+
     }
   }
 

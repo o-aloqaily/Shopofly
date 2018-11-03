@@ -45,11 +45,11 @@ const logout = () => {
   // TODO implement this.
 }
 
-export const getItem = (itemId) => {
+export const getItem = (url) => {
   //TODO wait for Nawaf to change API request
   return axios({
     method: 'GET',
-    url: `${url}/store/item/${itemId}`,
+    url: url,
     headers: { 'Content-type': 'application/json' }
   })
   .then((res) => res.data)
