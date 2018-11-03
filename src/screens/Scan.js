@@ -23,6 +23,40 @@ export default class App extends Component {
     });
   };
 
+  render() {
+    if (hasCameraPermission === null) {
+        return <Text>Requesting for camera permission</Text>;
+    } else if (hasCameraPermission === false) {
+        return <Text style={{ color: '#fff' }}>No access to camera</Text>;
+    }
+
+    // If permission is granted:
+    return (
+        <View style={styles.container}>
+            <BarCodeScanner
+              onBarCodeRead={this._handleBarCodeRead}
+              style={{
+                height: Dimensions.get('window').height,
+                width: Dimensions.get('window').width,
+              }}
+            />
+
+            <AwesomeAlert
+            	show={this.state.showAlert}
+            	title={"ITEM DESCRIPTION"}
+            	message={this.state.alertMessage}
+            	closeOnTouchOutside={true}
+            	closeOnHardwareBackPress={true}
+            	showConfirmButton={true}
+            	confirmText="OK"
+            	confirmButtonColor="#1fb19c"
+            	onConfirmPressed={() => this.hideAlert()}
+            	messageStyle={{ textAlign: 'left' }}
+            />
+        </View>
+    );
+  }
+
   // Handle QR code reader output
   _handleBarCodeRead = result => {
     console.log("Reading BarCode!!!")
@@ -33,7 +67,6 @@ export default class App extends Component {
 
       API.getItem(result.data)
       .then(async (response) => {
-        //TODO wait for Nawaf to change API request
         const itemName = response.itemName
         const price = response.price
         const itemDescription = response.description
@@ -47,60 +80,6 @@ export default class App extends Component {
       }).catch((error) => {})
     }
   }
-
-  render() {
-    return (
-      <View style={styles.container}>
-
-        {this.state.hasCameraPermission === null
-          ? <Text>Requesting for camera permission</Text>
-          : this.state.hasCameraPermission === false
-              ? <Text style={{ color: '#fff' }}>
-                  Camera permission is not granted
-                </Text>
-              : <BarCodeScanner
-                  onBarCodeRead={this._handleBarCodeRead}
-                  style={{
-                    height: Dimensions.get('window').height,
-                    width: Dimensions.get('window').width,
-                  }}
-                />}
-
-        <AwesomeAlert
-        	show={this.state.showAlert}
-        	title={"ITEM DESCRIPTION"}
-        	message={this.state.alertMessage}
-        	closeOnTouchOutside={true}
-        	closeOnHardwareBackPress={true}
-        	showConfirmButton={true}
-        	confirmText="OK"
-        	confirmButtonColor="#1fb19c"
-        	onConfirmPressed={() => this.hideAlert()}
-        	messageStyle={{ textAlign: 'left' }}
-        />
-
-        <StatusBar hidden />
-      </View>
-    );
-  }
-  _handlePressUrl = () => {
-    Alert.alert(
-      'Open this URL?',
-      this.state.lastScannedUrl,
-      [
-        {
-          text: 'Yes',
-          onPress: () => Linking.openURL(this.state.lastScannedUrl),
-        },
-        { text: 'No', onPress: () => {} },
-      ],
-      { cancellable: false }
-    );
-  };
-
-  _handlePressCancel = () => {
-    this.setState({ lastScannedUrl: null });
-  };
 
   showAlert = (message) => {
     console.log("Showing alert...")
@@ -126,13 +105,12 @@ export default class App extends Component {
     console.log("Alert hidden!!")
   }
 
+  //TODO check if this code is useful
   _maybeRenderUrl = () => {
     console.log("Maybe Render Url...")
     if (!this.state.lastScannedUrl) {
       return;
     }
-
-
     console.log("IT IS URL!! RENDER IT!!")
   };
 }
