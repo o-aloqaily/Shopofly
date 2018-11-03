@@ -59,10 +59,8 @@ export default class App extends Component {
 
   // Handle QR code reader output
   _handleBarCodeRead = result => {
-    console.log("Reading BarCode!!!")
     if (result.data !== this.state.lastScannedUrl) {
       LayoutAnimation.spring();
-      console.log("Changing Barcode Url")
       this.setState({ lastScannedUrl: result.data });
 
       API.getItem(result.data)
@@ -82,27 +80,17 @@ export default class App extends Component {
   }
 
   showAlert = (message) => {
-    console.log("Showing alert...")
     this.setState({
       showAlert: true,
       alertMessage: message
     })
-
-    console.log("SHOWALERT lastScannedUrl: " + this.state.lastScannedUrl)
-
-    console.log("Alert Shown!!")
   }
 
   hideAlert = () => {
-    console.log("Hiding alert...")
     this.setState({
       showAlert: false,
       lastScannedUrl: null
     })
-
-    console.log("HIDEALERT lastScannedUrl: " + this.state.lastScannedUrl)
-
-    console.log("Alert hidden!!")
   }
 
   //TODO check if this code is useful
@@ -121,30 +109,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#000',
-  },
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 15,
-    flexDirection: 'row',
-  },
-  url: {
-    flex: 1,
-  },
-  urlText: {
-    color: '#fff',
-    fontSize: 20,
-  },
-  cancelButton: {
-    marginLeft: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cancelButtonText: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: 18,
   },
 });
