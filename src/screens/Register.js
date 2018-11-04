@@ -20,7 +20,7 @@ export default class Register extends Component {
     .then(async (token) => {
 			if (token != undefined) {
 				await AsyncStorage.setItem('token', token)
-				this.props.navigation.navigate('Home')
+				this.props.navigation.navigate('Scan')
 			}
 			else {
 				alert('Invalid input. Your password must be at least 6 characters and email must be formatted right.')

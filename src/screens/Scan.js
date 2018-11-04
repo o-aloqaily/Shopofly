@@ -70,17 +70,21 @@ export default class App extends Component {
         .then(async (response) => {
           const itemName = response.itemName
           const price = response.price
+          const supplier = response.supplier.supplierName
           const itemDescription = response.description
 
           const firstLine = `name: ${itemName}`
           const secondLine = `price: ${price}`
-          const thirdLine = `description: ${itemDescription}`
+          const thirdLine = `supplier: ${supplier}`
 
-          const fullDescription = firstLine + "\n" + secondLine + "\n\n" + thirdLine
+          const fourthLine = `description: ${itemDescription}`
+
+          const fullDescription = firstLine + "\n" + secondLine
+                                  + "\n" + thirdLine + "\n\n" + fourthLine
           this.showAlert(fullDescription)
-        }).catch((error) => { console.log(error) })
+        })
+        .catch((error) => {})
       }
-
     }
   }
 
@@ -97,15 +101,6 @@ export default class App extends Component {
       lastScannedUrl: null
     })
   }
-
-  //TODO check if this code is useful
-  _maybeRenderUrl = () => {
-    console.log("Maybe Render Url...")
-    if (!this.state.lastScannedUrl) {
-      return;
-    }
-    console.log("IT IS URL!! RENDER IT!!")
-  };
 }
 
 const styles = StyleSheet.create({
