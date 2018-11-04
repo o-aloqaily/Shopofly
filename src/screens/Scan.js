@@ -33,6 +33,7 @@ export default class App extends Component {
     // If permission is granted:
     return (
         <View style={styles.container}>
+            // TODO enhance qr code reader looks
             <BarCodeScanner
               onBarCodeRead={this._handleBarCodeRead}
               style={{
