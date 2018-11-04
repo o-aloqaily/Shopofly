@@ -41,6 +41,13 @@ export default class App extends Component {
               }}
             />
 
+            // TODO add onCancel and Cancel button to the alerts
+            /***
+            * 1- A button to load item page
+            * 2- A button to close alert
+            *
+            * Note: you will create a loadItem() method to redirect to the screen "Item.js"
+            */
             <AwesomeAlert
             	show={this.state.showAlert}
             	title={"ITEM DESCRIPTION"}
@@ -48,6 +55,7 @@ export default class App extends Component {
             	closeOnTouchOutside={true}
             	closeOnHardwareBackPress={true}
             	showConfirmButton={true}
+              // show*****Button={true} <--- ??
             	confirmText="OK"
             	confirmButtonColor="#1fb19c"
             	onConfirmPressed={() => this.hideAlert()}
@@ -79,8 +87,7 @@ export default class App extends Component {
 
           const fourthLine = `description: ${itemDescription}`
 
-          const fullDescription = firstLine + "\n" + secondLine
-                                  + "\n" + thirdLine + "\n\n" + fourthLine
+          const fullDescription = firstLine + "\n" + secondLine + "\n" + thirdLine
           this.showAlert(fullDescription)
         })
         .catch((error) => {})
