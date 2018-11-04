@@ -64,12 +64,8 @@ export default class App extends Component {
       this.setState({ lastScannedUrl: result.data })
 
       const scannedText = result.data
-
-      //TODO remove debug
-      console.log(scannedText)
-
-      //TODO check if we need this condition
-      if(/*scannedText &&*/ scannedText.toLowerCase().includes("shopofly")) {
+      const regex = new RegExp('^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$')
+      if(regex.test(scannedText) && scannedText.toLowerCase().includes("shopofly")) {
         API.getItem(scannedText)
         .then(async (response) => {
           const itemName = response.itemName
@@ -82,7 +78,7 @@ export default class App extends Component {
 
           const fullDescription = firstLine + "\n" + secondLine + "\n\n" + thirdLine
           this.showAlert(fullDescription)
-        }).catch((error) => {})
+        }).catch((error) => { console.log(error) })
       }
 
     }

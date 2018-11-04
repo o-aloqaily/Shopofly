@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const url = 'https://shopofly.herokuapp.com/api'
+const url = 'http://shopofly.xyz/api'
 
 export const login = (email, password) => {
   return axios({
