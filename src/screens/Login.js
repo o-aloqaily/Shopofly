@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ImageBackground, View, TouchableOpacity, Text, AsyncStorage, Spinner } from 'react-native'
+import { ImageBackground, View, SafeAreaView, TouchableOpacity, Text, AsyncStorage, Spinner } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Hideo } from 'react-native-textinput-effects';
 import { Button } from '../components'
@@ -13,7 +13,7 @@ export default class Login extends Component {
 		loading: false,
 		showAlert: false,
 		alertTitle: '',
-		alertMessage: ''
+		alertMessage: '',
 	}
 
   onLogin = () => {
@@ -70,7 +70,7 @@ export default class Login extends Component {
 
   renderForm() {
 		const { email, password } = this.state
-		const { buttonContainer, formContainer, signUpButton, signUpText, boldText, inputContainer, inputStyle } = styles
+		const { buttonContainer, formContainer, signUpButton, signUpText, boldText, inputContainer, inputStyle, redBg } = styles
     return (
       <View style={formContainer}>
 
@@ -126,13 +126,13 @@ export default class Login extends Component {
 
 	render() {
 		return (
-      <ImageBackground
-        source={require('../../assets/splash.png')}
-        style={{width: '100%', height: '100%' }}
-      >
-        { this.renderForm() }
-				{ this.renderAlert() }
-      </ImageBackground>
+	      <ImageBackground
+	        source={require('../../assets/splash.png')}
+	        style={{width: '100%', height: '100%' }}
+	      >
+	        { this.renderForm() }
+					{ this.renderAlert() }
+	      </ImageBackground>
 
 		)
 	}
@@ -140,7 +140,7 @@ export default class Login extends Component {
 
 const styles = {
   formContainer: {
-    top: 300
+    top: '40%'
   },
   buttonContainer: {
     marginTop: 10

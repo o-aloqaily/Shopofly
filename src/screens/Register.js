@@ -1,37 +1,73 @@
 import React, { Component } from 'react'
-import { ImageBackground, View, TouchableOpacity, Text, AsyncStorage } from 'react-native'
+import { ImageBackground, View, SafeAreaView, TouchableOpacity, Text, AsyncStorage } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Hideo } from 'react-native-textinput-effects';
-import { Button } from '../components'
+import { Button, Alert } from '../components'
 import * as API from '../API'
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default class Register extends Component {
 	state = {
 		email: '',
 		password: '',
     name: '',
-    address: '',
-    phoneNumber: ''
+		isEmailValid: true,
+		isPassValid: true,
+		showAlert: false,
+		isLoading: false
 	}
 
+	showAlert = () => {
+		this.setState({
+			showAlert: true
+		})
+	}
+
+	hideAlert = () => {
+		this.setState({
+			showAlert: false
+		})
+	}
+
+
   onRegister = () => {
-    data = this.state
-    API.register(data)
-    .then(async (token) => {
-			if (token != undefined) {
-				await AsyncStorage.setItem('token', token)
-				this.props.navigation.navigate('Home')
-			}
-			else {
-				alert('Invalid input. Your password must be at least 6 characters and email must be formatted right.')
-			}
+    const { email, password } = this.state
+		this.setState({ isLoading: true })
+    API.register(email, password)
+    .then(async (data) => {
+			this.setState({ isLoading: false })
+			console.log(data.token);
+				await AsyncStorage.setItem('token', data.token)
+				this.props.navigation.navigate('Home', { token: data.token })
     })
-    .catch((error) => console.log('An error occured while registration.. Please try again.', error))
+    .catch((error) => {
+			this.setState({ isLoading: false, showAlert: true })
+			console.log(error.response);
+		})
   }
 
+	validateEmail = (email) => {
+		const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		console.log(email , re.test(String(email).toLowerCase()));
+		if (re.test(String(email).toLowerCase())) {
+			this.setState({ isEmailValid: true })
+		} else {
+			this.setState({ isEmailValid: false })
+		}
+	}
+
+	validatePassword = (password) => {
+		console.log(password);
+		if (password.length >= 6) {
+			this.setState({ isPassValid: true })
+		} else {
+			this.setState({ isPassValid: false })
+		}
+	}
+
   renderForm() {
-		const { email, password, address, name, phoneNumber } = this.state
-		const { buttonContainer, formContainer, signUpButton, signUpText, boldText, inputContainer, inputStyle } = styles
+		const { email, password, address, name, phoneNumber, isEmailValid, isPassValid } = this.state
+		const { buttonContainer, formContainer, signUpButton, signUpText, boldText, inputContainer, inputStyle, redShadow } = styles
 		return (
       <View style={formContainer}>
 
@@ -49,7 +85,7 @@ export default class Register extends Component {
             />
           </View>
 
-					<View style={inputContainer}>
+					<View style={[inputContainer, !isEmailValid ? redShadow : null ]}>
 						<Hideo
 							iconClass={MaterialCommunityIcons}
 							iconName={'email'}
@@ -59,11 +95,16 @@ export default class Register extends Component {
 							placeholder='email address...'
 							value={email}
 							onChangeText={(email) => this.setState({ email })}
+							onEndEditing={(e) => this.validateEmail(e.nativeEvent.text)}
 							autoCapitalize='none'
 						/>
 					</View>
+					{
+						!isEmailValid ? <Alert text={'Email is not valid! e.g. ex@ex.com'} /> : null
+					}
 
-					<View style={inputContainer}>
+
+					<View style={[inputContainer, !isPassValid ? redShadow : null ]}>
 						<Hideo
 							iconClass={MaterialCommunityIcons}
 							iconName={'key'}
@@ -73,17 +114,22 @@ export default class Register extends Component {
 							placeholder='password...'
 							value={password}
 							onChangeText={(password) => this.setState({ password })}
+							onEndEditing={(e) => this.validatePassword(e.nativeEvent.text)}
 							secureTextEntry
 							autoCapitalize='none'
 						/>
 					</View>
 				</View>
+				{
+					!isPassValid ? <Alert text={'Password should be at least 6 characters'} /> : null
+				}
+
 
         <View style={buttonContainer}>
           <Button
 						label={'Register'}
 						onClick={this.onRegister}
-						isLoading={this.state.loading}
+						isLoading={this.state.isLoading}
 					/>
         </View>
 
@@ -98,6 +144,24 @@ export default class Register extends Component {
     )
   }
 
+	renderAlert() {
+		const { showAlert } = this.state
+		return (
+			<AwesomeAlert
+				show={showAlert}
+				title={'Registeration Failed'}
+				message={'Please make sure you have a good connection and try again.'}
+				closeOnTouchOutside={true}
+				closeOnHardwareBackPress={true}
+				showConfirmButton={true}
+				confirmText="OK"
+				confirmButtonColor="#1fb19c"
+				onConfirmPressed={() => this.hideAlert()}
+				messageStyle={{ textAlign: 'center' }}
+			/>
+		)
+	}
+
 	render() {
 		return (
       <ImageBackground
@@ -105,6 +169,7 @@ export default class Register extends Component {
         style={{width: '100%', height: '100%' }}
       >
         { this.renderForm() }
+				{ this.renderAlert() }
       </ImageBackground>
 
 		)
@@ -113,7 +178,7 @@ export default class Register extends Component {
 
 const styles = {
   formContainer: {
-    top: 300
+    top: '40%'
   },
   buttonContainer: {
     marginTop: 10
@@ -150,4 +215,10 @@ const styles = {
 		opacity: 0.8,
 		marginBottom: 10
 	},
+	redShadow: {
+		shadowColor: 'red',
+		shadowOffset: { width: 0, height: 0 },
+		shadowOpacity: 1,
+		shadowRadius: 10,
+	}
 }
