@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Linking, Dimensions, LayoutAnimation, Text, View, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
+import { Linking, Dimensions, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import * as API from '../API'
@@ -31,10 +31,18 @@ export default class App extends Component {
     }
 
     // If permission is granted:
+    // TODO enhance qr code reader looks
+    // TODO add onCancel and Cancel button to the alerts
+    /***
+    * 1- A button to load item page
+    * 2- A button to close alert FIX
+    *
+    * Note: you will create a loadItem() method to redirect to the screen "Item.js"
+    */
     return (
         <View style={styles.container}>
-            // TODO enhance qr code reader looks
             <BarCodeScanner
+              style={[StyleSheet.absoluteFill, styles.container]}
               onBarCodeRead={this._handleBarCodeRead}
               style={{
                 height: Dimensions.get('window').height,
@@ -42,13 +50,6 @@ export default class App extends Component {
               }}
             />
 
-            // TODO add onCancel and Cancel button to the alerts
-            /***
-            * 1- A button to load item page
-            * 2- A button to close alert
-            *
-            * Note: you will create a loadItem() method to redirect to the screen "Item.js"
-            */
             <AwesomeAlert
             	show={this.state.showAlert}
             	title={"ITEM DESCRIPTION"}
@@ -56,10 +57,13 @@ export default class App extends Component {
             	closeOnTouchOutside={true}
             	closeOnHardwareBackPress={true}
             	showConfirmButton={true}
-              // show*****Button={true} <--- ??
-            	confirmText="OK"
-            	confirmButtonColor="#1fb19c"
-            	onConfirmPressed={() => this.hideAlert()}
+              confirmButtonColor="#FF5722"
+            	confirmText="Close"
+              onConfirmPressed={() => this.loadItem()}
+              showCancelButton={true}
+            	cancelButtonColor="#448AFF"
+            	cancelText="Preview"
+              onCancelPressed={() => this.hideAlert()}
             	messageStyle={{ textAlign: 'left' }}
             />
         </View>
@@ -69,7 +73,6 @@ export default class App extends Component {
   // Handle QR code reader output
   _handleBarCodeRead = result => {
     if (result.data !== this.state.lastScannedUrl) {
-      LayoutAnimation.spring()
       this.setState({ lastScannedUrl: result.data })
 
       const scannedText = result.data
@@ -80,13 +83,10 @@ export default class App extends Component {
           const itemName = response.itemName
           const price = response.price
           const supplier = response.supplier.supplierName
-          const itemDescription = response.description
 
           const firstLine = `name: ${itemName}`
           const secondLine = `price: ${price}`
           const thirdLine = `supplier: ${supplier}`
-
-          const fourthLine = `description: ${itemDescription}`
 
           const fullDescription = firstLine + "\n" + secondLine + "\n" + thirdLine
           this.showAlert(fullDescription)
@@ -108,6 +108,24 @@ export default class App extends Component {
       showAlert: false,
       lastScannedUrl: null
     })
+  }
+
+  loadItem = () => {
+    // TODO save item data from the first API request ()
+    API.getItem(this.state.lastScannedUrl)
+    .then(async (response) => {
+      const itemName = response.itemName
+      const price = response.price
+      const supplier = response.supplier.supplierName
+      const description = response.description
+      const quantity = response.quantity
+      // TODO pass all images to item.
+      const imageUrl = response.image_url[0]
+
+      this.props.navigation.navigate('Item', { itemName, price, supplier, description, quantity, imageUrl })
+      this.setState({ lastScannedUrl: null, showAlert: false, alertMessage: '' })
+    })
+    .catch((error) => {})
   }
 }
 

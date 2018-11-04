@@ -17,6 +17,9 @@ const MyApp = createStackNavigator({
   },
   Register: {
     screen: Register
+  },
+  Item: {
+    screen: Item
   }
 }, {
   navigationOptions: {

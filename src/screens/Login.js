@@ -22,6 +22,7 @@ export default class Login extends Component {
 
     API.login(email, password)
     .then(async (token) => {
+			console.log(token)
 			await AsyncStorage.setItem('token', token)
 			this.props.navigation.navigate('Scan', { token })
 			this.setState({ loading: false })

@@ -12,7 +12,7 @@ const Item = (props) => {
             supplier,
             description,
             quantity,
-            imageUrl } = this.props
+            imageUrl } = this.props.navigation.state.params
 
     const { container } = styles
 
