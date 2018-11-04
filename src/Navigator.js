@@ -3,6 +3,7 @@ import Home from './screens/Home'
 import Login from './screens/Login'
 import Register from './screens/Register'
 import Scan from './screens/Scan'
+import Item from './screens/Item'
 
 
 const MyApp = createStackNavigator({

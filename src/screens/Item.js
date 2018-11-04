@@ -1,12 +1,11 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { Card, Button } from '../components';
 
 
 
-const Item = (props) => {
-
-    // Destructuring
+const Item = () => {
+  //TODO Put dummy values instead of (this.props.navigation.state.params)
     const { itemName,
             price,
             supplier,
@@ -19,7 +18,7 @@ const Item = (props) => {
 		return (
       <View style={container}>
         <Card>
-          // TODO put the full info of the item
+          <Text>TODO style this screen!!</Text>
         </Card>
       </View>
 		)
@@ -33,3 +32,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
 });
+
+export default Item

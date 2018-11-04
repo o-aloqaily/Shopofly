@@ -121,9 +121,9 @@ export default class App extends Component {
       const quantity = response.quantity
       // TODO pass all images to item.
       const imageUrl = response.image_url[0]
-
+      
       this.props.navigation.navigate('Item', { itemName, price, supplier, description, quantity, imageUrl })
-      this.setState({ lastScannedUrl: null, showAlert: false, alertMessage: '' })
+      this.hideAlert()
     })
     .catch((error) => {})
   }
