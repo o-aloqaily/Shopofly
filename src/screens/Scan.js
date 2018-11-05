@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Linking, Dimensions, LayoutAnimation, Text, View, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
+import { Linking, Dimensions, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import * as API from '../API'
@@ -29,8 +29,6 @@ export default class App extends Component {
     } else if (this.state.hasCameraPermission === false) {
         return <Text style={{ color: '#fff' }}>No access to camera</Text>;
     }
-
-    // If permission is granted:
     return (
         <View style={styles.container}>
             <BarCodeScanner
@@ -48,9 +46,13 @@ export default class App extends Component {
             	closeOnTouchOutside={true}
             	closeOnHardwareBackPress={true}
             	showConfirmButton={true}
-            	confirmText="OK"
-            	confirmButtonColor="#1fb19c"
-            	onConfirmPressed={() => this.hideAlert()}
+            	confirmButtonColor="#448AFF"
+            	confirmText="Preview"
+              onConfirmPressed={() => this.loadItem()}
+              cancelButtonColor="#FF5722"
+            	cancelText="Close"
+              onCancelPressed={() => this.hideAlert()}
+              showCancelButton={true}
             	messageStyle={{ textAlign: 'left' }}
             />
         </View>
@@ -60,7 +62,6 @@ export default class App extends Component {
   // Handle QR code reader output
   _handleBarCodeRead = result => {
     if (result.data !== this.state.lastScannedUrl) {
-      LayoutAnimation.spring()
       this.setState({ lastScannedUrl: result.data })
 
       const scannedText = result.data
@@ -70,17 +71,17 @@ export default class App extends Component {
         .then(async (response) => {
           const itemName = response.itemName
           const price = response.price
-          const itemDescription = response.description
+          const supplier = response.supplier.supplierName
 
           const firstLine = `name: ${itemName}`
           const secondLine = `price: ${price}`
-          const thirdLine = `description: ${itemDescription}`
+          const thirdLine = `supplier: ${supplier}`
 
-          const fullDescription = firstLine + "\n" + secondLine + "\n\n" + thirdLine
+          const fullDescription = firstLine + "\n" + secondLine + "\n" + thirdLine
           this.showAlert(fullDescription)
-        }).catch((error) => { console.log(error) })
+        })
+        .catch((error) => {})
       }
-
     }
   }
 
@@ -98,14 +99,23 @@ export default class App extends Component {
     })
   }
 
-  //TODO check if this code is useful
-  _maybeRenderUrl = () => {
-    console.log("Maybe Render Url...")
-    if (!this.state.lastScannedUrl) {
-      return;
-    }
-    console.log("IT IS URL!! RENDER IT!!")
-  };
+  loadItem = () => {
+    // TODO save item data from the first API request ()
+    API.getItem(this.state.lastScannedUrl)
+    .then(async (response) => {
+      const itemName = response.itemName
+      const price = response.price
+      const supplier = response.supplier.supplierName
+      const description = response.description
+      const quantity = response.quantity
+      // TODO pass all images to item.
+      const imageUrl = response.image_url[0]
+
+      this.props.navigation.navigate('Item', { itemName, price, supplier, description, quantity, imageUrl })
+      this.hideAlert()
+    })
+    .catch((error) => {})
+  }
 }
 
 const styles = StyleSheet.create({

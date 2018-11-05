@@ -22,9 +22,11 @@ export default class Login extends Component {
 
     API.login(email, password)
     .then(async (token) => {
-			await AsyncStorage.setItem('token', token)
-			this.props.navigation.navigate('Scan', { token })
-			this.setState({ loading: false })
+			if(token){
+				await AsyncStorage.setItem('token', token)
+				this.props.navigation.navigate('Scan', { token })
+				this.setState({ loading: false })
+			}
     })
     .catch((error) => {
 			this.showAlert('Login Failed', 'Please make sure you submitted the correct email and password')
