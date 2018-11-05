@@ -29,20 +29,9 @@ export default class App extends Component {
     } else if (this.state.hasCameraPermission === false) {
         return <Text style={{ color: '#fff' }}>No access to camera</Text>;
     }
-
-    // If permission is granted:
-    // TODO enhance qr code reader looks
-    // TODO add onCancel and Cancel button to the alerts
-    /***
-    * 1- A button to load item page
-    * 2- A button to close alert FIX
-    *
-    * Note: you will create a loadItem() method to redirect to the screen "Item.js"
-    */
     return (
         <View style={styles.container}>
             <BarCodeScanner
-              style={[StyleSheet.absoluteFill, styles.container]}
               onBarCodeRead={this._handleBarCodeRead}
               style={{
                 height: Dimensions.get('window').height,
@@ -57,13 +46,13 @@ export default class App extends Component {
             	closeOnTouchOutside={true}
             	closeOnHardwareBackPress={true}
             	showConfirmButton={true}
-              confirmButtonColor="#FF5722"
-            	confirmText="Close"
+            	confirmButtonColor="#448AFF"
+            	confirmText="Preview"
               onConfirmPressed={() => this.loadItem()}
-              showCancelButton={true}
-            	cancelButtonColor="#448AFF"
-            	cancelText="Preview"
+              cancelButtonColor="#FF5722"
+            	cancelText="Close"
               onCancelPressed={() => this.hideAlert()}
+              showCancelButton={true}
             	messageStyle={{ textAlign: 'left' }}
             />
         </View>
@@ -121,7 +110,7 @@ export default class App extends Component {
       const quantity = response.quantity
       // TODO pass all images to item.
       const imageUrl = response.image_url[0]
-      
+
       this.props.navigation.navigate('Item', { itemName, price, supplier, description, quantity, imageUrl })
       this.hideAlert()
     })

@@ -8,23 +8,31 @@ import Item from './screens/Item'
 
 const MyApp = createStackNavigator({
   Login: {
-    screen: Login
+    screen: Login,
+    navigationOptions: {
+      header: null
+    }
   },
   Scan: {
-    screen: Scan
+    screen: Scan,
+    navigationOptions: {
+      header: null
+    }
   },
   Home: {
-    screen: Home
+    screen: Home,
+    navigationOptions: {
+      header: null
+    }
   },
   Register: {
-    screen: Register
+    screen: Register,
+    navigationOptions: {
+      header: null
+    }
   },
   Item: {
     screen: Item
-  }
-}, {
-  navigationOptions: {
-    header: null
   }
 })
 
