@@ -1,27 +1,34 @@
-import React from 'react'
-import { View, StyleSheet } from 'react-native'
+import React, { Component } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
 import { Card, Button } from '../components';
 
 
 
-const Item = () => {
-  //TODO Put dummy values instead of (this.props.navigation.state.params)
+export default class Item extends Component {
+  render() {
+    const { navigation } = this.props;
+
+    console.log("NAVIGATION: " + navigation);
+
     const { itemName,
             price,
             supplier,
             description,
             quantity,
-            imageUrl } = this.props.navigation.state.params
+            imageUrl } = navigation.getParam;
+
+    console.log("PARAMS: " + navigation.state.params);
 
     const { container } = styles
 
-		return (
+    return (
       <View style={container}>
         <Card>
           <Text>TODO style this screen!!</Text>
         </Card>
       </View>
-		)
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -32,5 +39,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
 });
-
-export default Item
