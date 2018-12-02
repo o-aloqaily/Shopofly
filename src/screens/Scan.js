@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Linking, Dimensions, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Linking, Dimensions, Text, View, StyleSheet,
+  TouchableOpacity, Image } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import * as API from '../API'
@@ -37,7 +38,15 @@ export default class App extends Component {
                 height: Dimensions.get('window').height,
                 width: Dimensions.get('window').width,
               }}
-            />
+            >
+              <View style={styles.container}>
+                <Text style={styles.description}>SCAN QR CODE</Text>
+                <Image
+                  style={styles.qr}
+                  source={require('../../assets/scan.png')}
+                />
+              </View>
+            </BarCodeScanner>
 
             <AwesomeAlert
             	show={this.state.showAlert}
@@ -61,7 +70,8 @@ export default class App extends Component {
 
   // Handle QR code reader output
   _handleBarCodeRead = result => {
-    if (result.data !== this.state.lastScannedUrl) {
+    // result.data !== this.state.lastScannedUrl
+    if (true) {
       this.setState({ lastScannedUrl: result.data })
 
       const scannedText = result.data
@@ -118,11 +128,36 @@ export default class App extends Component {
   }
 }
 
+const { width } = Dimensions.get('window')
+const qrSize = width * 0.6
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#000',
+    justifyContent: 'center'
+  },
+  qr: {
+    marginTop: '10%',
+    marginBottom: '10%',
+    width: qrSize,
+    height: qrSize,
+    alignSelf: 'center'
+  },
+  description: {
+    fontSize: width * 0.09,
+    marginTop: '10%',
+    textAlign: 'center',
+    width: '70%',
+    color: 'white',
+    fontFamily: 'Roboto-Medium',
+    alignSelf: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 10
+  },
+  cancel: {
+    fontSize: width * 0.05,
+    textAlign: 'center',
+    width: '70%',
+    color: 'white',
   },
 });

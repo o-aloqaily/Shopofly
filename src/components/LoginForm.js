@@ -43,7 +43,7 @@ const LoginForm = (props) => {
 const styles = {
   inputStyle: {
     color: '#464949',
-    fontFamily: 'Coves-Bold'
+    fontFamily: 'Roboto-Medium'
   },
   inputContainer: {
     width: '80%',

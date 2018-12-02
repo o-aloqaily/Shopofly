@@ -2,17 +2,28 @@ import React from 'react'
 import { TouchableOpacity, Text, ActivityIndicator } from 'react-native'
 
 const Button = (props) => {
-	const { container, labelStyle } = styles
+	const { container } = styles
 
   const propsStyles = {
-    width: props.width,
-    height: props.height,
-    backgroundColor: props.color
+    width: props.width || '80%',
+    height: props.height || 50,
+    backgroundColor: props.color || '#1fb19c',
+		borderRadius: props.borderRadius || 20,
+		alignSelf: props.align || 'center',
+		justifyContent: 'center',
   }
+
+	const labelStyle = {
+			alignSelf: 'center',
+			fontFamily: 'Roboto-Medium',
+			color: props.labelColor || 'white',
+			fontSize: 20,
+		}
+
 
 	return (
     <TouchableOpacity
-      style={[container]}
+      style={propsStyles}
       onPress={props.onClick}
     >
       {
@@ -20,23 +31,17 @@ const Button = (props) => {
 			}
     </TouchableOpacity>
 	)
+
+
 }
 
 const styles = {
-  container: {
-    borderRadius: 20,
-    width: '80%',
-    height: 48,
-    backgroundColor: '#1fb19c',
-    alignSelf: 'center',
-    justifyContent: 'center',
-  },
-  labelStyle: {
-    alignSelf: 'center',
-    fontFamily: 'Coves-Bold',
-    color: 'white',
-    fontSize: 20,
-  }
+	labelStyle: {
+		alignSelf: 'center',
+		fontFamily: 'Roboto-Medium',
+		color: 'white',
+		fontSize: 20,
+	}
 }
 
 export { Button }

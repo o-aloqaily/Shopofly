@@ -29,7 +29,7 @@ const styles = {
     color: 'white',
     marginLeft: 10,
     fontSize: 16,
-    fontFamily: 'Coves-Bold'
+    fontFamily: 'Roboto-Medium'
   },
   alertContainer: {
     width: '80%',

@@ -190,7 +190,7 @@ const styles = {
   },
   signUpText: {
     color: 'white',
-    fontFamily: 'Coves-Light',
+    fontFamily: 'Roboto-Medium',
     opacity: 1,
     fontSize: 16,
     alignSelf: 'center'
@@ -201,12 +201,12 @@ const styles = {
     alignSelf: 'center',
   },
   boldText: {
-    fontFamily: 'Coves-Bold',
+    fontFamily: 'Roboto-Medium',
     fontWeight: '900'
   },
 	inputStyle: {
 		color: '#464949',
-		fontFamily: 'Coves-Bold'
+		fontFamily: 'Roboto-Medium'
 	},
 	inputContainer: {
 		width: '80%',
