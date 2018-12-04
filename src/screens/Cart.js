@@ -10,8 +10,16 @@ export default class Cart extends Component {
 		singlePickerVisible: false,
 		refreshing: false,
 		showAlert: false,
-		itemToBeDeleted: ''
+		itemToBeDeleted: '',
+		total: 0,
 	}
+
+	componentDidMount() {
+		this.didFocusListener = this.props.navigation.addListener(
+		  'didFocus',
+		  () => { this.loadItems() },
+		)
+	  }
 
 	deleteItemFromStorage = async (itemName) => {
 		await AsyncStorage.getItem('cart').then((cart) => {
@@ -32,8 +40,7 @@ export default class Cart extends Component {
 	}
 
 	deleteItem = (itemName) => {
-		this.setState({ itemToBeDeleted: itemName })
-		this.showAlert()
+		this.setState({ itemToBeDeleted: itemName, showAlert: true })
 	}
 
 	hidePicker = () => {
@@ -74,9 +81,10 @@ export default class Cart extends Component {
 	}
 
 	render() {
-		console.log();
 		return (
-			<ScrollView style={{ backgroundColor: 'white', flex: 1 }}
+			<ScrollView 
+				style={{ backgroundColor: 'white', height: '100%', width: '100%', flex: 1, }}
+				contentContainerStyle={{ flex: 1 }}
 				refreshControl={
 					<RefreshControl
 						refreshing={this.state.refreshing}
@@ -99,7 +107,10 @@ export default class Cart extends Component {
 								showDeleteAlert={this.showAlert}
 							/> : null
 						)
-					}) : null
+					}) : <Text style={{ color: 'black', alignSelf: 'center', marginTop: 200 }}>Your cart is empty.</Text>
+				}
+				{
+					this.state.cart && this.state.cart.length > 0 ? <Button label='Checkout' borderRadius={5} onClick={() => this.props.navigation.navigate('CheckoutAddress')} /> : null
 				}
 				<AwesomeAlert
 					show={this.state.showAlert}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScrollView, View, Text, StyleSheet, Image, Dimensions, Picker, AsyncStorage } from 'react-native'
+import { ScrollView, View, Text, StyleSheet, Image, Dimensions, AsyncStorage } from 'react-native'
 import { Card, Button } from '../components'
 import { SinglePickerMaterialDialog } from 'react-native-material-dialog'
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -123,7 +123,7 @@ export default class Item extends Component {
         <View style={styles.line} />
         <View style={[styles.infoContainer, styles.addToCartContainer]}>
           <Button label={this.state.quantity.value} color={'#f1f1f1'} borderRadius={5} width={'20%'} onClick={() => this.setState({ singlePickerVisible: true })} labelColor={'#545454'} />
-          <Button label={'ADD TO CART'} color={'#66b266'} borderRadius={5} width={'78%'} onClick={() => this.addToCart()} />
+          <Button label={'ADD TO CART'} borderRadius={5} width={'78%'} onClick={() => this.addToCart()} />
         </View>
         <View style={styles.line} />
         <View style={styles.infoContainer}>

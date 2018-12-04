@@ -16,6 +16,7 @@
     "react-native-awesome-alerts": "^1.1.1",
     "react-native-material-dialog": "^0.7.4",
     "react-native-material-dropdown": "^0.11.1",
+    "react-native-simple-radio-button": "^2.7.3",
     "react-native-textinput-effects": "^0.4.2",
     "react-navigation": "^2.18.0"
   }

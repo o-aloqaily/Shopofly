@@ -9,7 +9,7 @@ const CartItem = (props) => {
 	const { itemContainer, imgContainer, img, nameStyle, infoContainer, supplierStyle, priceStyle } = styles
 	return (
     <View>
-      <View style={itemContainer}>
+      <View style={ props.checkout ? { flexDirection: 'row', justifyContent: 'space-between' } : itemContainer}>
         <View style={infoContainer}>
           <Text style={nameStyle}>{ itemName }</Text>
           <Text style={priceStyle}>{ price }</Text>
@@ -24,9 +24,12 @@ const CartItem = (props) => {
               labelColor={'#545454'}
               align={'flex-start'}
             />
-            <TouchableOpacity onPress={() => props.deleteItem(itemName)} style={{ width: 50, height: 50, backgroundColor: '#ff6666', marginLeft: 10, borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
-              <Ionicons name="ios-trash" size={32} color="white" />
-            </TouchableOpacity>
+            {
+              props.checkout ? null : 
+              <TouchableOpacity onPress={() => props.deleteItem(itemName)} style={{ width: 50, height: 50, backgroundColor: '#ff6666', marginLeft: 10, borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
+                <Ionicons name="ios-trash" size={32} color="white" />
+              </TouchableOpacity>
+            }
           </View>
         </View>
         <View style={imgContainer}>
@@ -35,7 +38,9 @@ const CartItem = (props) => {
       </View>
       <View style={{ alignItems: 'flex-start'}}>
       </View>
-      <SinglePickerMaterialDialog
+      {
+        props.checkout ? null : 
+        <SinglePickerMaterialDialog
         title={'Choose quantity'}
         items={[{ label: '1', value: 1 }, { label: '2', value: 2 }]}
         visible={props.singlePickerVisible}
@@ -47,6 +52,7 @@ const CartItem = (props) => {
           props.updateQuantity(itemName, result.selectedItem.value );
         }}
       />
+      }
       <View style={styles.line} />
     </View>
 
