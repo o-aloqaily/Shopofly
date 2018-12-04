@@ -54,3 +54,15 @@ export const getItem = (url) => {
   })
   .then((res) => res.data)
 }
+
+export const getAddress = (token) => {
+  return axios({
+    method: 'POST',
+    url: `${url}/auth/me`,
+    headers: { 'Content-type': 'application/json' },
+    data: {
+      'token': token
+    }
+  })
+  .then((res) => res.data)
+}
