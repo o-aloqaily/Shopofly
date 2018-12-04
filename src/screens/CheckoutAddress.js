@@ -2,17 +2,40 @@ import React from 'react'
 import { View, Text, AsyncStorage } from 'react-native'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { Button } from '../components'
+import * as API from '../API'
 
 export default class CheckoutAddress extends React.Component {
     state = {
-        items: []
+        // items: [],
+        name: '',
+        address: '',
+        mobile_number: ''
     }
 
-    loadItems() {
-		AsyncStorage.getItem('cart')
-		.then((cart) => this.setState({ cart: JSON.parse(cart) }))
-		.catch((error) => console.log(error))
-	}
+    moloadItems() {
+      // AsyncStorage.getItem('cart')
+      // .then((cart) => this.setState({ cart: JSON.parse(cart) }))
+      // .catch((error) => console.log(error))
+
+      AsyncStorage.getItem('token')
+      .then((token) => {
+        API.getAddress(token)
+        .then((data) => {
+          const { name, address, mobile_number } = data
+
+          this.setState({ name: name, address: address.address, mobile_number: mobile_number })
+
+          let selectedAddress = {
+            name: name,
+            address: address,
+            mobile_number: mobile_number
+          }
+
+          AsyncStorage.setItem('address', selectedAddress)
+        })
+      })
+      .catch((err) => console.log(err))
+     }
 
     render() {
         return (
@@ -31,19 +54,19 @@ export default class CheckoutAddress extends React.Component {
                         <View style={{ width: '15%' }}>
                           <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#ccc' }}>Name</Text>
                         </View>
-                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>Mohammed Alsa'don</Text>
+                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>{this.state.name}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 20 }}>
                         <View style={{ width: '15%' }}>
                           <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#ccc' }}>Address</Text>
                         </View>
-                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>4043 Algamh, Al Wadi</Text>
+                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>{this.state.address}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 20 }}>
                         <View style={{ width: '15%' }}>
                           <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#ccc' }}>Name</Text>
                         </View>
-                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>+966582863901</Text>
+                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>{this.state.mobile_number}</Text>
                     </View>
 
                 </View>
@@ -53,6 +76,6 @@ export default class CheckoutAddress extends React.Component {
                     <Button width='100%' label='Continue' borderRadius={5} onClick={() => this.props.navigation.navigate('CheckoutSummary')} />
                 </View>
             </View>
-        )    
+        )
     }
 }
