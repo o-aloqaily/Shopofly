@@ -8,7 +8,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 
 export default class Login extends Component {
 	state = {
-		email: 'nnawif@gmail.com',
+		email: 'osamalfaify@gmail.com',
 		password: '123456',
 		loading: false,
 		showAlert: false,
