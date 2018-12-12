@@ -3,36 +3,90 @@ import { ScrollView, View, Text, AsyncStorage } from 'react-native'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { Button, CartItem } from '../components'
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import * as Global from '../Global.js'
 
 export default class CheckoutAddress extends React.Component {
     state = {
-        cart: []
+        cart: [],
+        singlePickerVisible: false,
+        name: '',
+        address: '',
+        mobile_number: '',
+        subtotal: 0,
+        vatApprox: 0,
+        totalPrice: 0
     }
 
     componentWillMount() {
         this.loadItems()
+
+        const { name, address, mobile_number } = this.props.navigation.state.params.selectedAddress
+
+        this.setState({ name, address, mobile_number })
+
     }
 
     loadItems() {
-		AsyncStorage.getItem('cart')
-		.then((cart) => this.setState({ cart: JSON.parse(cart) }))
-		.catch((error) => console.log(error))
+      AsyncStorage.getItem('cart')
+    	.then((cart) => {
+        console.log(cart);
+
+        this.setState({ cart: JSON.parse(cart) })
+        this.loadPriceInfo()
+
+        console.log(this.state.cart);
+      })
+    	.catch((error) => console.log(error))
     }
-    
-    getTotal() {
-        let total = 0
-        console.log('total type:', typeof(total))
+
+    loadPriceInfo() {
+      const subtotal = this.getSubtotal()
+      const vatApprox = this.getVatApprox(subtotal)
+      const totalPrice = subtotal + vatApprox
+
+      this.setState({ subtotal, vatApprox, totalPrice })
+    }
+    getSubtotal() {
+        let subtotal = 0
+
         for (let item of this.state.cart) {
-            if (item.price)
-                 total = total + parseInt(item.price)
+            if (item.price) {
+                 subtotal = subtotal + parseInt(item.price.substring(1)) * parseInt(item.quantity)
+
+            }
         }
-        console.log(total, typeof(total))
-        return total
+
+        return subtotal
+    }
+
+    getVatApprox(subtotal) {
+      let vatApprox = Global.vat * subtotal
+      vatApprox = Math.round(vatApprox * 100) / 100
+      return vatApprox
     }
 
     placeOrder = async () => {
 		await AsyncStorage.setItem('cart', JSON.stringify([]))
         this.props.navigation.navigate('OrderPlaced')
+	}
+
+  showPicker = () => {
+		this.setState({ singlePickerVisible: true })
+	}
+
+  hidePicker = () => {
+		this.setState({ singlePickerVisible: false })
+	}
+
+  updateQuantity = (itemName, newQty) => {
+		let newCart = this.state.cart
+		for (let i in newCart) {
+			if (newCart[i].itemName == itemName) {
+				newCart[i].quantity = newQty
+				return;
+			}
+		}
+		this.setState({ cart: newCart });
 	}
 
     render() {
@@ -41,7 +95,7 @@ export default class CheckoutAddress extends React.Component {
             {label: 'Cash on Delivery', value: 1 }
           ]
         return (
-            <ScrollView 
+            <ScrollView
                 style={{ backgroundColor: 'white', flex: 1, padding: 20 }}
                 contentContainerStyle={{ paddingBottom: 100 }}
             >
@@ -61,9 +115,9 @@ export default class CheckoutAddress extends React.Component {
                         />
                         <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 10 }}>Home</Text>
                 </View>
-                <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#ccc',  }}>Mohammed Alsa'don</Text>
-                <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#ccc', }}>4043 Algamh, Al Wadi</Text>
-                <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#ccc', }}>+966582863901</Text>
+                <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#ccc',  }}>{this.state.name}</Text>
+                <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#ccc', }}>{this.state.address}</Text>
+                <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#ccc', }}>{this.state.mobile_number}</Text>
                 <View style={styles.line} />
                 <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 24, color: '#333', marginBottom: 20 }}>Review</Text>
                 {
@@ -73,34 +127,38 @@ export default class CheckoutAddress extends React.Component {
 								item={item}
 								key={index}
 								quantity={{ label: item.quantity+'', value: item.quantity }}
-                                checkout
+                showPicker={this.showPicker}
+								hidePicker={this.hidePicker}
+                singlePickerVisible={this.state.singlePickerVisible}
+								// updateQuantity={this.updateQuantity}
+                checkout
 							/> : null
 						)
 					}) : null
                 }
                     <View style={{ flexDirection: 'row' }}>
-                        <View style={{ width: '25%' }}>
+                        <View style={{ width: '35%' }}>
                           <Text style={{ fontFamily: 'Roboto-Regular', fontSize: 14, color: '#333' }}>SubTotal Price</Text>
                         </View>
-                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>$299.00</Text>
+                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>${this.state.subtotal}</Text>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
-                        <View style={{ width: '25%' }}>
+                        <View style={{ width: '35%' }}>
                           <Text style={{ fontFamily: 'Roboto-Regular', fontSize: 14, color: '#333' }}>Shipping Rate</Text>
                         </View>
                         <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>FREE</Text>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
-                        <View style={{ width: '25%' }}>
+                        <View style={{ width: '35%' }}>
                           <Text style={{ fontFamily: 'Roboto-Regular', fontSize: 14, color: '#333' }}>VAT Approx.</Text>
                         </View>
-                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>14.95</Text>
+                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>${this.state.vatApprox}</Text>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
-                        <View style={{ width: '25%' }}>
+                        <View style={{ width: '35%' }}>
                           <Text style={{ fontFamily: 'Roboto-Regular', fontSize: 14, color: '#333' }}>Total Price</Text>
                         </View>
-                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>$313.95</Text>
+                        <Text style={{ fontFamily: 'Roboto-Bold', fontSize: 14, color: '#333', paddingLeft: 50 }}>${this.state.totalPrice}</Text>
                     </View>
                     <View style={styles.line} />
                     <Button width='100%' label='Confirm Order' borderRadius={5} onClick={() => this.placeOrder()} />
@@ -108,7 +166,7 @@ export default class CheckoutAddress extends React.Component {
 
 
             </ScrollView>
-        )    
+        )
     }
 }
 
@@ -119,5 +177,5 @@ const styles = {
         width: '100%',
         marginTop: 20,
         marginBottom: 20
-      },    
+      },
 }

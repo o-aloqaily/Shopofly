@@ -8,7 +8,6 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 const dimensions = Dimensions.get('window')
 const width = dimensions.width
 
-
 export default class Item extends Component {
   state = {
     quantity: { label: '1', value: 1 },

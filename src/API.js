@@ -64,5 +64,5 @@ export const getAddress = (token) => {
       'token': token
     }
   })
-  .then((res) => { res.data.name, res.data.address, res.data.mobile_number })
+  .then((res) => res.data)
 }

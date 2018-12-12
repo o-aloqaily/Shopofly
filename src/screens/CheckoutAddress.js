@@ -6,36 +6,40 @@ import * as API from '../API'
 
 export default class CheckoutAddress extends React.Component {
     state = {
-        // items: [],
+        items: [],
         name: '',
         address: '',
         mobile_number: ''
     }
 
     moloadItems() {
-      // AsyncStorage.getItem('cart')
-      // .then((cart) => this.setState({ cart: JSON.parse(cart) }))
-      // .catch((error) => console.log(error))
+      AsyncStorage.getItem('cart')
+      .then((cart) => this.setState({ cart: JSON.parse(cart) }))
+      .catch((error) => console.log(error))
+     }
+
+    componentDidMount() {
+      console.log("COMPONENT DID MOUNT")
 
       AsyncStorage.getItem('token')
       .then((token) => {
+        console.log("ENTERED TOKEN AUTH ME")
         API.getAddress(token)
         .then((data) => {
+          console.log("GOT DATA!!!")
           const { name, address, mobile_number } = data
 
-          this.setState({ name: name, address: address.address, mobile_number: mobile_number })
+          this.setState({ name: name, address: address, mobile_number: mobile_number })
 
           let selectedAddress = {
             name: name,
             address: address,
             mobile_number: mobile_number
           }
-
-          AsyncStorage.setItem('address', selectedAddress)
         })
       })
       .catch((err) => console.log(err))
-     }
+    }
 
     render() {
         return (
@@ -73,7 +77,11 @@ export default class CheckoutAddress extends React.Component {
                 <Button width='100%' label='Add New Address' borderRadius={5} color='#ddd' labelColor='#333' />
 
                 <View style={{ position: 'absolute', bottom: 10, width: '100%' }}>
-                    <Button width='100%' label='Continue' borderRadius={5} onClick={() => this.props.navigation.navigate('CheckoutSummary')} />
+                    <Button width='100%' label='Continue' borderRadius={5} onClick={() => {
+                      const selectedAddress = { name: this.state.name, address: this.state.address, mobile_number: this.state.mobile_number }
+
+                      this.props.navigation.navigate('CheckoutSummary', { selectedAddress })
+                    }} />
                 </View>
             </View>
         )

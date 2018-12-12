@@ -19,7 +19,7 @@ export default class Cart extends Component {
 		  'didFocus',
 		  () => { this.loadItems() },
 		)
-	  }
+	}
 
 	deleteItemFromStorage = async (itemName) => {
 		await AsyncStorage.getItem('cart').then((cart) => {
@@ -36,6 +36,7 @@ export default class Cart extends Component {
 				this.hideAlert()
 				this.loadItems()
 			})
+			this.setState({ cart: newCart })
 		})
 	}
 
@@ -53,7 +54,7 @@ export default class Cart extends Component {
 
 	loadItems() {
 		AsyncStorage.getItem('cart')
-		.then((cart) => this.setState({ cart: JSON.parse(cart) }))
+		.then((cart) => this.setState({ cart: JSON.parse(cart), showAlert: false }))
 		.catch((error) => console.log(error))
 	}
 
@@ -80,9 +81,13 @@ export default class Cart extends Component {
 		this.setState({ cart: newCart });
 	}
 
+	deleteFromCart = () => {
+		this.setState({ showAlert: false }, () => this.deleteItemFromStorage(this.state.itemToBeDeleted))
+	}
+
 	render() {
 		return (
-			<ScrollView 
+			<ScrollView
 				style={{ backgroundColor: 'white', height: '100%', width: '100%', flex: 1, }}
 				contentContainerStyle={{ flex: 1 }}
 				refreshControl={
@@ -103,7 +108,7 @@ export default class Cart extends Component {
 								quantity={{ label: item.quantity+'', value: item.quantity }}
 								singlePickerVisible={this.state.singlePickerVisible}
 								updateQuantity={this.updateQuantity}
-								deleteItem={this.deleteItem}
+								deleteItem={(itemName) => this.deleteItem(itemName)}
 								showDeleteAlert={this.showAlert}
 							/> : null
 						)
@@ -123,7 +128,7 @@ export default class Cart extends Component {
 					confirmButtonColor="#1fb19c"
 					cancelText="Cancel"
 					onCancelPressed={() => this.hideAlert()}
-					onConfirmPressed={() => this.deleteItemFromStorage(this.state.itemToBeDeleted)}
+					onConfirmPressed={this.deleteFromCart}
 					messageStyle={{ textAlign: 'center' }}
 				/>
 			</ScrollView>
